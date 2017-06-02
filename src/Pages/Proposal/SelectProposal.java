@@ -136,7 +136,7 @@ public class SelectProposal {
     public void setProposalType(String proposalType)
     {
         Select combo=new Select(ProposalType);
-        combo.selectByValue(proposalType);
+        combo.selectByVisibleText(proposalType);
     }
 
     public  void setProposalUse(String proposalUse1)

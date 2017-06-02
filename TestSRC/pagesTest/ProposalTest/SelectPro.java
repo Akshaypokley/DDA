@@ -4,6 +4,7 @@ import Pages.Proposal.NewApplication;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import org.apache.bcel.classfile.Constant;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -18,6 +19,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -25,6 +27,8 @@ import org.testng.annotations.Test;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -38,18 +42,20 @@ import static Utilites.OpenBrowser.openBrowser;
 public class SelectPro {
     WebDriver driver;
 
-    @BeforeMethod
+/*    @BeforeMethod
     public void loadbrowser() {
         driver = openBrowser("chrome");
         GetUrl("url");
         LogFunction(driver);
-    }
+    }*/
 
     @Test(dataProvider = "ProposalInfo")
-    public void SaveSelectPro(String caseType, String Location/*,String BuildingNo,String BlockNo,String HouseNo,String PinCode,String
+    public void SaveSelectPro(String testcaseName,String keyword,String objectName,String objectType,String value/*,String BuildingNo,String BlockNo,String HouseNo,String PinCode,String
                               PlotNo,String PockectNo,String RoadS,String SchmeNo,String SecoNo,String Situated
     ,String ward*/) throws InterruptedException {
-
+        driver = openBrowser("chrome");
+        GetUrl("url");
+        LogFunction(driver);
         NewApplication newApplication = new NewApplication(driver);
 
         driver.switchTo().frame("ifrmListing");
@@ -58,58 +64,43 @@ public class SelectPro {
 
         driver.switchTo().frame("IframeAddProposal");
         Thread.sleep(100);//switch to iframe
-        newApplication.setCaseType(caseType);
-        newApplication.setLocation(Location);
-   /*    newApplication.ClickDUACNO();
-        newApplication.setBuildingNo(BuildingNo);*/
-        /*newApplication.setBlockNo(BlockNo);
-        newApplication.setHouseNo(HouseNo);
-        newApplication.setPincode(PinCode);
-        newApplication.setPlotNo(PlotNo);
-        newApplication.setPockectNo(PockectNo);
-        newApplication.setRoad_Street(RoadS);
-        newApplication.setSchmeNo(SchmeNo);
-        newApplication.setSecotorNo(SecoNo);
-        newApplication.setSituated(Situated);
-        newApplication.setWard(ward);
-        newApplication.setSave();*/
+        System.out.println(testcaseName);
+        System.out.println(keyword);
+
+        System.out.println(objectName);System.out.println(objectType);
+        newApplication.setCaseType(value);
+       // newApplication.setLocation(Location);
+
     }
 
 
     @DataProvider
     public Object[][] ProposalInfo() throws IOException, BiffException {
-//Object[][] objects=null;
+        try {
+            FileInputStream fis = new FileInputStream("Excelsheet/TestCase.xls");
 
-        FileInputStream fis = new FileInputStream("Excelsheet/TestCase.xlsx");
-        XSSFWorkbook workbook = new XSSFWorkbook(fis);
-        XSSFSheet sheet = workbook.getSheet("TestCase");
-        XSSFRow row = sheet.getRow(0);
-        int colNum = row.getPhysicalNumberOfCells();
-        int RowCount = sheet.getPhysicalNumberOfRows();
+            XSSFWorkbook wb = new XSSFWorkbook(fis);
 
-        String data[][] = new String[RowCount - 2][2];
+            XSSFSheet sheet = wb.getSheet("TestCase");
 
+            for (int count = 1; count <= sheet.getLastRowNum(); count++) {
+                XSSFRow row = sheet.getRow(count);
+                System.out.println("Running test case " + row.getCell(0).toString());
 
-        for (int i = 2; i < RowCount; i++)
+                //row.getCell(1).toString(),row.getCell(2).toString();
 
-        for (Row row1 : sheet)
+                System.out.println("Count" + row);
 
-        {
-            int j=5;
-
-            int n=4;
-            XSSFCell cell = (XSSFCell) row1.getCell(n); // Get the Cell at the Index / Colum you want.
+                //ExcelUtils.setExcelFile(Constant.Path_TestData,Constant.File_TestData);
+                // ExcelUtils.setCellData("PASS",count,4);
 
 
-            if (cell == null) {
-                data[i - 2][n] = "";
-            } else {
-               cell.setCellType(Cell.CELL_TYPE_STRING);
-                data[i- 2][n] = cell.getStringCellValue();
             }
-            ++n;
-            ++j;
+            fis.close();
 
+        } catch (IOException e) {
+
+            System.out.println("Test data file not found");
         }
-        return data;
+        return new Object[0][];
     }}

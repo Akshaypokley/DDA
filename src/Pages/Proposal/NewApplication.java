@@ -79,14 +79,14 @@ public class NewApplication {
 
     public void setCaseType(String caseType)
     {
-        Select combo=new Select(CaseType);
-        combo.selectByVisibleText(caseType);
+        Select combo1=new Select(CaseType);
+        combo1.selectByVisibleText(caseType);
     }
 
     public void setLocation(String location)
     {
         Select combo=new Select(Location);
-        combo.selectByValue(location);
+        combo.selectByVisibleText(location);
     }
 
     public void ClickDUACNO()
